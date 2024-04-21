@@ -6,7 +6,7 @@ const val DNA_STR = "ATACCTAGTGTAGTCCGGACGCTTTCTGAGAAGTTTTCATCCTACGCCGATCCCAGCTG
 
 //const val DNA_STR = "CTTTTGCCGTACACAGCCACGCTGTTAAGTCTACTCATTTGCCAATAAGG"
 
-data class Node(val value : String, val id: UUID = UUID.randomUUID(), val nexts:  MutableMap<UUID, Int> = mutableMapOf())
+data class Node(val value : String, val id: UUID = UUID.randomUUID(), var nexts:  MutableMap<UUID, Int> = mutableMapOf())
 
 fun Node.checkMaxPokrycie(node: Node): Int {
     val pokrycie = this.value.substrCompare(node.value)
@@ -36,7 +36,32 @@ fun main() {
             }
     }
 
+    // handle errors
+    spectrumNodes.forEach { node ->
+        node.nexts.asSequence()
+            .map {spectrumNodes.getById(it.key)}
+            .filter { node.value == it.value }
+            .forEach {nnode ->
+                val nnodesSeq = nnode.nexts.asSequence()
+                    .map {spectrumNodes.getById(it.key)}
+                    .filter { nnode.value == it.value }
+
+                if (nnodesSeq.count() > 0) {
+                    nnodesSeq.forEach { nnnode ->
+                        node.nexts[nnode.id] = 3
+                        nnode.nexts[nnnode.id] = 2
+                    }
+                } else {
+                    node.nexts[nnode.id] = 2
+                }
+            }
+    }
+
     println(spectrumNodes)
+}
+
+fun List<Node>.getById(id: UUID): Node {
+    return this.asSequence().filter { it.id == id }.first();
 }
 
 fun String.splitBy(amount: Int): Array<String> {
