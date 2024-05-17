@@ -48,6 +48,11 @@ class InstGenerator {
             return spectrumNodes
         }
 
+        fun generateRandomDNASequence(length: Int): String {
+            val nucleotides = listOf('A', 'C', 'G', 'T')
+            return (1..length).map { nucleotides.random() }.joinToString("")
+        }
+
         private fun handleDuplicateErrors(spectrumNodes: List<Node>) {
             spectrumNodes.forEach { node ->
                 node.nexts.asSequence()
