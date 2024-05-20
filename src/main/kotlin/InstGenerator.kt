@@ -1,6 +1,7 @@
 package pl.bioinf
 
 import pl.bioinf.data.Node
+import pl.bioinf.data.NodesList
 import pl.bioinf.data.checkMaxPokrycie
 import kotlin.random.Random
 
@@ -8,9 +9,12 @@ class InstGenerator {
 
     companion object {
 
-        fun generateInstance(nodeStrSeq: String, kNum: Int, positiveErrors: Int?, negativeErrors: Int?): List<Node> {
-            val spectrum = nodeStrSeq.splitBy(kNum)
+        fun generateInstance(nodeStrSeq: String, kNum: Int, positiveErrors: Int?, negativeErrors: Int?): NodesList {
+            var spectrum = nodeStrSeq.splitBy(kNum)
 
+            val first = spectrum.first()
+
+            spectrum = spectrum.drop(1).toTypedArray()
             spectrum.sort()
 
             // Dodaj błędy
@@ -28,13 +32,19 @@ class InstGenerator {
                 spectrum
             }
 
-            val spectrumNodes = spectrumWithErrors.map {
+            var spectrumNodes = spectrumWithErrors.map {
                 Node(it)
             }
+            val firstNode = Node(first)
+            spectrumNodes = spectrumNodes.plus(firstNode)
 
             spectrumNodes.forEach { node ->
                 spectrumNodes.asSequence()
-                    .filter { it.id !== node.id && !node.nexts.contains(it.id) && !it.nexts.contains(node.id) }
+                    .filter {
+                        it.id !== node.id && it.id !== firstNode.id && !node.nexts.contains(it.id) && !it.nexts.contains(
+                            node.id
+                        )
+                    }
                     .forEach { nextNode ->
                         val pokrycieD = node.checkMaxPokrycie(nextNode)
                         if (pokrycieD != 0) {
@@ -45,7 +55,7 @@ class InstGenerator {
 
             handleDuplicateErrors(spectrumNodes)
 
-            return spectrumNodes
+            return NodesList(firstNode, spectrumNodes)
         }
 
         fun generateRandomDNASequence(length: Int): String {

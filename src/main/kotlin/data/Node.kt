@@ -3,6 +3,8 @@ package pl.bioinf.data
 import pl.bioinf.substrCompare
 import java.util.*
 
+class NodesList (val firstNode: Node, val allNodes: List<Node>)
+
 data class Node(val value : String, val id: UUID = UUID.randomUUID(), var nexts:  MutableMap<UUID, Int> = mutableMapOf())
 
 fun Node.checkMaxPokrycie(node: Node): Int {

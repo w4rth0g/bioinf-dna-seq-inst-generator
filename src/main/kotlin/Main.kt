@@ -13,5 +13,6 @@ fun main() {
 
     val spectrumNodes = InstGenerator.generateInstance(dnaSeq, 8, positiveErrors, negativeErrors)
 
-    println(spectrumNodes)
+    println(spectrumNodes.firstNode)
+    println(spectrumNodes.allNodes)
 }
