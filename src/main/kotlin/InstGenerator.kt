@@ -41,9 +41,7 @@ class InstGenerator {
             spectrumNodes.forEach { node ->
                 spectrumNodes.asSequence()
                     .filter {
-                        it.id !== node.id && it.id !== firstNode.id && !node.nexts.contains(it.id) && !it.nexts.contains(
-                            node.id
-                        )
+                        it.id !== node.id && it.id !== firstNode.id
                     }
                     .forEach { nextNode ->
                         val pokrycieD = node.checkMaxPokrycie(nextNode)

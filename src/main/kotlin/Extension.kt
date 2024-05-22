@@ -8,7 +8,7 @@ fun List<Node>.getById(id: UUID): Node {
 }
 
 fun String.splitBy(amount: Int): Array<String> {
-    return this.windowed(size = amount, step = 1, partialWindows = true).toTypedArray()
+    return this.windowed(size = amount, step = 1, partialWindows = false).toTypedArray()
 }
 
 fun String.substrCompare(str: String): Int {
@@ -17,7 +17,7 @@ fun String.substrCompare(str: String): Int {
     var sbstrLen = this.length - 1
     while (sbstrLen > 1) {
         if (this.substring(0..<sbstrLen) == str.substring(this.length - sbstrLen..<this.length) ||
-            this.substring(this.length - sbstrLen..<this.length) == str.substring(0..sbstrLen)
+            this.substring(this.length - sbstrLen..<this.length) == str.substring(0..<sbstrLen)
         ) {
             return sbstrLen
         }
