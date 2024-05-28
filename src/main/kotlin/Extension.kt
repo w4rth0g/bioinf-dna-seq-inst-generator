@@ -11,7 +11,7 @@ fun String.substrCompare(str: String): Int {
 
     var sbstrLen = this.length - 1
     while (sbstrLen > 1) {
-        if (this.substring(0..<sbstrLen) == str.substring(this.length - sbstrLen..<this.length) ||
+        if (
             this.substring(this.length - sbstrLen..<this.length) == str.substring(0..<sbstrLen)
         ) {
             return sbstrLen
