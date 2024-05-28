@@ -1,11 +1,6 @@
 package pl.bioinf
 
-import pl.bioinf.data.Node
 import java.util.*
-
-fun List<Node>.getById(id: UUID): Node {
-    return this.asSequence().filter { it.id == id }.first();
-}
 
 fun String.splitBy(amount: Int): Array<String> {
     return this.windowed(size = amount, step = 1, partialWindows = false).toTypedArray()

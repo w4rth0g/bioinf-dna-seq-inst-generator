@@ -3,14 +3,12 @@ package pl.bioinf.data
 import pl.bioinf.substrCompare
 import java.util.*
 
-class NodesList (val firstNode: Node, val allNodes: List<Node>)
+class NodesList (val first: String, val nodes: MutableMap<String, Pair<MutableMap<String, Int>, Int>>)
 
-data class Node(val value : String, val id: UUID = UUID.randomUUID(), var nexts:  MutableMap<UUID, Int> = mutableMapOf())
-
-fun Node.checkMaxPokrycie(node: Node): Int {
-    val pokrycie = this.value.substrCompare(node.value)
-    if (this.value.length - pokrycie <= 3) {
-        return this.value.length - pokrycie
+fun checkMaxPokrycie(node1: String, node2: String): Int {
+    val pokrycie = node1.substrCompare(node2)
+    if (node1.length - pokrycie <= 3) {
+        return node1.length - pokrycie
     }
     return 0
 }

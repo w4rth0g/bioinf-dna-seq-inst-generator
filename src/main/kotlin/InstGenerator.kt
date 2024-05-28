@@ -1,6 +1,5 @@
 package pl.bioinf
 
-import pl.bioinf.data.Node
 import pl.bioinf.data.NodesList
 import pl.bioinf.data.checkMaxPokrycie
 import kotlin.random.Random
@@ -27,60 +26,41 @@ class InstGenerator {
             }
 
             spectrumWithErrors = if (positiveErrors != null) {
-                addPositiveErrors(spectrum, positiveErrors, kNum).toTypedArray()
+                addPositiveErrors(spectrumWithErrors, positiveErrors, kNum).toTypedArray()
             } else {
                 spectrum
             }
 
-            var spectrumNodes = spectrumWithErrors.map {
-                Node(it)
-            }
-            val firstNode = Node(first)
-            spectrumNodes = spectrumNodes.plus(firstNode)
+            val duplicates = (spectrumWithErrors + first).groupingBy { it }.eachCount().filter { it.value > 1 }
 
-            spectrumNodes.forEach { node ->
-                spectrumNodes.asSequence()
+            val spectrumNodes = mutableMapOf<String, Pair<MutableMap<String, Int>, Int>>()
+            spectrumNodes[first] = mutableMapOf<String, Int>() to 1
+            val nodesList = NodesList(first, (spectrumNodes + spectrumWithErrors.associateWith { mutableMapOf<String, Int>() to 1 }).toMutableMap())
+
+            nodesList.nodes.forEach { node ->
+                nodesList.nodes.asSequence()
                     .filter {
-                        it.id !== node.id && it.id !== firstNode.id
+                        it.key != node.key && it.key != nodesList.nodes.keys.first()
                     }
                     .forEach { nextNode ->
-                        val pokrycieD = node.checkMaxPokrycie(nextNode)
+                        val pokrycieD = checkMaxPokrycie(node.key, nextNode.key)
                         if (pokrycieD != 0) {
-                            node.nexts[nextNode.id] = pokrycieD
+                            node.value.first[nextNode.key] = pokrycieD
                         }
                     }
             }
 
-            handleDuplicateErrors(spectrumNodes)
+            duplicates.forEach { dupl ->
+                val sec = nodesList.nodes[dupl.key]!!.second
+                nodesList.nodes[dupl.key] = nodesList.nodes[dupl.key]!!.copy(second = sec + dupl.value - 1)
+            }
 
-            return NodesList(firstNode, spectrumNodes)
+            return nodesList
         }
 
         fun generateRandomDNASequence(length: Int): String {
             val nucleotides = listOf('A', 'C', 'G', 'T')
             return (1..length).map { nucleotides.random() }.joinToString("")
-        }
-
-        private fun handleDuplicateErrors(spectrumNodes: List<Node>) {
-            spectrumNodes.forEach { node ->
-                node.nexts.asSequence()
-                    .map {spectrumNodes.getById(it.key)}
-                    .filter { nnode: Node -> node.value == nnode.value }
-                    .forEach {nnode: Node ->
-                        val nnodesSeq = nnode.nexts.asSequence()
-                            .map {spectrumNodes.getById(it.key)}
-                            .filter { nnnode: Node -> nnode.value == nnnode.value }
-
-                        if (nnodesSeq.count() > 0) {
-                            nnodesSeq.forEach { nnnode: Node ->
-                                node.nexts[nnode.id] = 3
-                                nnode.nexts[nnnode.id] = 2
-                            }
-                        } else {
-                            node.nexts[nnode.id] = 2
-                        }
-                    }
-            }
         }
 
         private fun addNegativeErrors(spectrum: Array<String>, numErrors: Int): List<String> {

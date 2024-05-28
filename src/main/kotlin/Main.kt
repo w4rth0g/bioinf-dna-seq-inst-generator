@@ -14,8 +14,9 @@ fun main() {
 
 //    println("------ " + "TCAACATAC".substrCompare("AACATACAG"))
 
-    val spectrumNodes = InstGenerator.generateInstance(dnaSeq, 5, 0, 0)
+    val spectrumNodes = InstGenerator.generateInstance(dnaSeq, 3, 0, 0)
 //
 //    println(spectrumNodes.firstNode)
-    println(spectrumNodes.allNodes)
+    println(spectrumNodes.first)
+    println(spectrumNodes.nodes.filter { it.value.second > 1 })
 }
