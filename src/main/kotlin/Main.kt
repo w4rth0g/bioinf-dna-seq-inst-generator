@@ -12,11 +12,19 @@ fun main() {
 
     println(dnaSeq)
 
-//    println("------ " + "TCAACATAC".substrCompare("AACATACAG"))
+    val (first, spectrum) = InstGenerator.generateSpectrum(dnaSeq, 3, 0, 0)
 
-    val spectrumNodes = InstGenerator.generateInstance(dnaSeq, 3, 0, 0)
+    println(first)
+    var spec = "["
+    spectrum.forEach {
+        spec += "$it,"
+    }
+    spec += "]"
+    println(spec)
+
+    val spectrumNodes = InstGenerator.generateInstance(first, spectrum)
 //
 //    println(spectrumNodes.firstNode)
     println(spectrumNodes.first)
-    println(spectrumNodes.nodes.filter { it.value.second > 1 })
+    println(spectrumNodes.nodes)
 }

@@ -8,7 +8,7 @@ class InstGenerator {
 
     companion object {
 
-        fun generateInstance(nodeStrSeq: String, kNum: Int, positiveErrors: Int?, negativeErrors: Int?): NodesList {
+        fun generateSpectrum(nodeStrSeq: String, kNum: Int, positiveErrors: Int?, negativeErrors: Int?): Pair<String, Array<String>> {
             var spectrum = nodeStrSeq.splitBy(kNum)
 
             val first = spectrum.first()
@@ -30,6 +30,11 @@ class InstGenerator {
             } else {
                 spectrum
             }
+
+            return first to spectrumWithErrors
+        }
+
+        fun generateInstance(first: String, spectrumWithErrors: Array<String>): NodesList {
 
             val duplicates = (spectrumWithErrors + first).groupingBy { it }.eachCount().filter { it.value > 1 }
 
